@@ -1,0 +1,143 @@
+{
+  "name": "Profit Powerhouse — Post Sale Follow-up",
+  "description": "Triggered by Gumroad sale webhook. Sends personalized follow-up email with Calendly link, logs to Airtable, sends bundle discount to repeat buyers.",
+  "flow": [
+    {
+      "id": 1,
+      "module": "gateway:CustomWebHook",
+      "version": 1,
+      "parameters": {
+        "hook": "{{GUMROAD_SALE_WEBHOOK}}",
+        "maxResults": 1
+      },
+      "metadata": {
+        "designer": {"x": 0, "y": 0},
+        "restore": {},
+        "expect": [
+          {"name": "buyer_email", "type": "text", "label": "Buyer Email"},
+          {"name": "product_name", "type": "text", "label": "Product Name"},
+          {"name": "sale_id", "type": "text", "label": "Sale ID"},
+          {"name": "price", "type": "number", "label": "Price"}
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "module": "builtin:BasicFeeder",
+      "version": 1,
+      "parameters": {"delay": 300},
+      "metadata": {
+        "designer": {"x": 200, "y": 0},
+        "restore": {},
+        "label": "Wait 5 minutes"
+      }
+    },
+    {
+      "id": 3,
+      "module": "http:ActionSendData",
+      "version": 3,
+      "parameters": {
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "method": "POST",
+        "headers": [
+          {"name": "Authorization", "value": "Bearer {{GROQ_API_KEY}}"},
+          {"name": "Content-Type", "value": "application/json"}
+        ],
+        "body": "{\"model\": \"llama-3.3-70b-versatile\", \"messages\": [{\"role\": \"user\", \"content\": \"Write a warm, brief follow-up email for a digital product buyer. Product: {{1.product_name}}. Include a Calendly link suggestion for a free 15-min call. Max 100 words. Subject line included.\"}], \"max_tokens\": 200}"
+      },
+      "metadata": {
+        "designer": {"x": 400, "y": 0},
+        "label": "Generate follow-up email via Groq"
+      }
+    },
+    {
+      "id": 4,
+      "module": "gmail:ActionSendEmail",
+      "version": 1,
+      "parameters": {
+        "to": "{{1.buyer_email}}",
+        "subject": "Your download is ready + a quick note",
+        "content": "{{parseJSON(3.body).choices[0].message.content}}\n\nBook a free 15-min call: https://calendly.com/YOUR_LINK",
+        "contentType": "text"
+      },
+      "metadata": {
+        "designer": {"x": 600, "y": 0},
+        "label": "Send follow-up email"
+      }
+    },
+    {
+      "id": 5,
+      "module": "airtable:ActionCreateRecord",
+      "version": 1,
+      "parameters": {
+        "base": "{{AIRTABLE_BASE_ID}}",
+        "table": "Revenue_Log",
+        "fields": {
+          "Stream": "Digital Products",
+          "Amount": "{{1.price}}",
+          "Source": "Gumroad",
+          "Description": "{{1.product_name}}",
+          "Date": "{{formatDate(now; 'YYYY-MM-DD')}}"
+        }
+      },
+      "metadata": {
+        "designer": {"x": 800, "y": 0},
+        "label": "Log to Airtable Revenue_Log"
+      }
+    },
+    {
+      "id": 6,
+      "module": "builtin:BasicRouter",
+      "version": 1,
+      "routes": [
+        {
+          "label": "Repeat buyer",
+          "filter": {
+            "conditions": [["{{1.is_gift}}", "equal", "false"]]
+          },
+          "flow": [
+            {
+              "id": 7,
+              "module": "gmail:ActionSendEmail",
+              "version": 1,
+              "parameters": {
+                "to": "{{1.buyer_email}}",
+                "subject": "Special offer for you — bundle discount",
+                "content": "Thanks for being a returning customer! Use code BUNDLE20 for 20% off any other template.",
+                "contentType": "text"
+              }
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "designer": {"x": 1000, "y": 0},
+        "label": "Router: check repeat buyer"
+      }
+    }
+  ],
+  "metadata": {
+    "instant": true,
+    "version": 1,
+    "scenario": {
+      "roundtrips": 1,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "autoCommitTriggerLast": true,
+      "sequential": false,
+      "confidential": false,
+      "dataloss": false,
+      "dlq": false
+    },
+    "designer": {"orphans": []}
+  },
+  "_setup_instructions": {
+    "step1": "Import this JSON into Make.com via Scenarios > Import Blueprint",
+    "step2": "Connect Gumroad module with your Gumroad access token",
+    "step3": "Connect Gmail module with your Gmail account",
+    "step4": "Connect Airtable module with your Airtable API key and base ID",
+    "step5": "Replace GROQ_API_KEY with your actual key in the HTTP module",
+    "step6": "Replace YOUR_LINK in the Calendly URL",
+    "step7": "Enable the scenario"
+  }
+}

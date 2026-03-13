@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 -c \":*)",
+      "Bash(pandoc \"C:\\\\Users\\\\cyani\\\\Downloads\\\\profit_powerhouse_concept_sheet.docx\" -o /tmp/concept_sheet.md)",
+      "Read(//tmp/**)"
+    ]
+  }
+}

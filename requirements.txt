@@ -1,0 +1,36 @@
+# Core
+requests>=2.31.0
+python-dotenv>=1.0.0
+flask>=3.0.0
+
+# Telegram
+python-telegram-bot>=20.7
+
+# Airtable
+pyairtable>=2.3.0
+
+# eBay
+ebaysdk>=2.2.0
+
+# Etsy/OAuth
+requests-oauthlib>=1.3.1
+
+# Scraping
+beautifulsoup4>=4.12.0
+lxml>=4.9.0
+
+# Reddit
+praw>=7.7.1
+
+# Google / Gmail
+google-auth>=2.23.0
+google-auth-oauthlib>=1.1.0
+google-api-python-client>=2.108.0
+
+# Scheduling / Utilities
+schedule>=1.2.1
+python-dateutil>=2.8.2
+tenacity>=8.2.3
+
+# Data
+pandas>=2.1.0

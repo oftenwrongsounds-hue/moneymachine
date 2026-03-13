@@ -1,0 +1,188 @@
+{
+  "name": "Profit Powerhouse — Telegram Approval Handler",
+  "description": "Parses YES/NO/APPROVE/SKIP from Telegram. Routes arbitrage YES to GitHub Actions dispatch for listing creation. Routes APPROVE to Reddit/Twitter API post. Logs everything to Airtable.",
+  "flow": [
+    {
+      "id": 1,
+      "module": "telegram-bot-api:TriggerNewUpdates",
+      "version": 1,
+      "parameters": {
+        "token": "{{TELEGRAM_TOKEN}}",
+        "types": ["callback_query", "message"]
+      },
+      "metadata": {
+        "designer": {"x": 0, "y": 0},
+        "label": "Watch Telegram Bot Updates"
+      }
+    },
+    {
+      "id": 2,
+      "module": "builtin:BasicRouter",
+      "version": 1,
+      "routes": [
+        {
+          "label": "Arbitrage YES",
+          "filter": {
+            "name": "Arbitrage YES filter",
+            "conditions": [
+              [
+                "{{if(1.callback_query.data; substring(1.callback_query.data; 0; 12); '')}}",
+                "equal",
+                "APPROVE:deal:"
+              ]
+            ]
+          },
+          "flow": [
+            {
+              "id": 10,
+              "module": "builtin:BasicFeeder",
+              "version": 1,
+              "parameters": {
+                "array": [{"deal_id": "{{substring(1.callback_query.data; 12)}}"}]
+              },
+              "metadata": {"label": "Extract deal ID"}
+            },
+            {
+              "id": 11,
+              "module": "http:ActionSendData",
+              "version": 3,
+              "parameters": {
+                "url": "https://api.github.com/repos/{{GITHUB_REPO}}/actions/workflows/arbitrage_scanner.yml/dispatches",
+                "method": "POST",
+                "headers": [
+                  {"name": "Authorization", "value": "Bearer {{GITHUB_DISPATCH_TOKEN}}"},
+                  {"name": "Accept", "value": "application/vnd.github.v3+json"}
+                ],
+                "body": "{\"ref\": \"main\", \"inputs\": {\"deal_id\": \"{{10.deal_id}}\"}}"
+              },
+              "metadata": {"label": "Dispatch GitHub Actions — create eBay listing"}
+            },
+            {
+              "id": 12,
+              "module": "airtable:ActionUpdateRecord",
+              "version": 1,
+              "parameters": {
+                "base": "{{AIRTABLE_BASE_ID}}",
+                "table": "Arbitrage_Deals",
+                "filterByFormula": "DealID='{{10.deal_id}}'",
+                "fields": {"Status": "Approved — Listing Creating"}
+              },
+              "metadata": {"label": "Update Airtable deal status"}
+            },
+            {
+              "id": 13,
+              "module": "telegram-bot-api:ActionSendMessage",
+              "version": 1,
+              "parameters": {
+                "token": "{{TELEGRAM_TOKEN}}",
+                "chat_id": "{{TELEGRAM_CHAT_ID}}",
+                "text": "✅ Deal approved! Creating eBay listing now...",
+                "parse_mode": "Markdown"
+              }
+            }
+          ]
+        },
+        {
+          "label": "Reddit/Twitter APPROVE",
+          "filter": {
+            "name": "Social approval filter",
+            "conditions": [
+              [
+                "{{if(1.callback_query.data; substring(1.callback_query.data; 0; 15); '')}}",
+                "equal",
+                "APPROVE:social:"
+              ]
+            ]
+          },
+          "flow": [
+            {
+              "id": 20,
+              "module": "builtin:BasicFeeder",
+              "version": 1,
+              "parameters": {
+                "array": [{"approval_data": "{{substring(1.callback_query.data; 8)}}"}]
+              },
+              "metadata": {"label": "Extract social post data"}
+            },
+            {
+              "id": 21,
+              "module": "http:ActionSendData",
+              "version": 3,
+              "parameters": {
+                "url": "https://api.github.com/repos/{{GITHUB_REPO}}/actions/workflows/proposal_engine.yml/dispatches",
+                "method": "POST",
+                "headers": [
+                  {"name": "Authorization", "value": "Bearer {{GITHUB_DISPATCH_TOKEN}}"},
+                  {"name": "Accept", "value": "application/vnd.github.v3+json"}
+                ],
+                "body": "{\"ref\": \"main\", \"inputs\": {\"approval_id\": \"{{20.approval_data}}\"}}"
+              },
+              "metadata": {"label": "Trigger social post via GitHub Actions"}
+            },
+            {
+              "id": 22,
+              "module": "telegram-bot-api:ActionSendMessage",
+              "version": 1,
+              "parameters": {
+                "token": "{{TELEGRAM_TOKEN}}",
+                "chat_id": "{{TELEGRAM_CHAT_ID}}",
+                "text": "✅ Approved! Posting social reply now...",
+                "parse_mode": "Markdown"
+              }
+            }
+          ]
+        },
+        {
+          "label": "SKIP / NO",
+          "filter": {
+            "name": "Skip filter",
+            "conditions": [
+              [
+                "{{if(1.callback_query.data; substring(1.callback_query.data; 0; 5); '')}}",
+                "equal",
+                "SKIP:"
+              ]
+            ]
+          },
+          "flow": [
+            {
+              "id": 30,
+              "module": "airtable:ActionCreateRecord",
+              "version": 1,
+              "parameters": {
+                "base": "{{AIRTABLE_BASE_ID}}",
+                "table": "Arbitrage_Deals",
+                "filterByFormula": "",
+                "fields": {"Status": "Skipped by user"}
+              },
+              "metadata": {"label": "Log skip to Airtable"}
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "designer": {"x": 200, "y": 0},
+        "label": "Route: YES deal / APPROVE social / NO/SKIP"
+      }
+    }
+  ],
+  "metadata": {
+    "instant": true,
+    "version": 1,
+    "scenario": {
+      "roundtrips": 1,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "sequential": true
+    }
+  },
+  "_setup_instructions": {
+    "step1": "Import this JSON into Make.com",
+    "step2": "Connect Telegram Bot module with TELEGRAM_TOKEN",
+    "step3": "Set GITHUB_REPO and GITHUB_DISPATCH_TOKEN in all HTTP modules",
+    "step4": "Set AIRTABLE_BASE_ID and connect Airtable module",
+    "step5": "Copy the webhook URL from the trigger module",
+    "step6": "Set MAKE_WEBHOOK_URL GitHub secret to this URL",
+    "step7": "Enable the scenario"
+  }
+}

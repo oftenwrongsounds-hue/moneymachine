@@ -1,0 +1,117 @@
+{
+  "name": "Profit Powerhouse — Weekly P&L Summary",
+  "description": "Every Sunday 8am UTC: fetch last 7 days from Airtable Revenue_Log, aggregate by stream, generate plain-English summary via Groq, send to Gmail + Telegram.",
+  "flow": [
+    {
+      "id": 1,
+      "module": "builtin:BasicTriggerSchedule",
+      "version": 1,
+      "parameters": {
+        "pattern": "week",
+        "day": "sunday",
+        "time": "08:00"
+      },
+      "metadata": {
+        "designer": {"x": 0, "y": 0},
+        "label": "Sunday 8am trigger"
+      }
+    },
+    {
+      "id": 2,
+      "module": "airtable:ActionSearchRecords",
+      "version": 1,
+      "parameters": {
+        "base": "{{AIRTABLE_BASE_ID}}",
+        "table": "Revenue_Log",
+        "filterByFormula": "AND(IS_AFTER({Date}, DATEADD(TODAY(), -7, 'days')), IS_BEFORE({Date}, TODAY()))",
+        "fields": ["Stream", "Amount", "Source", "Date"]
+      },
+      "metadata": {
+        "designer": {"x": 200, "y": 0},
+        "label": "Fetch last 7 days revenue"
+      }
+    },
+    {
+      "id": 3,
+      "module": "builtin:BasicAggregator",
+      "version": 1,
+      "parameters": {
+        "sourceModule": 2,
+        "groupBy": "{{2.Stream}}",
+        "fieldsToAggregate": [
+          {"fieldName": "Amount", "aggregate": "SUM"}
+        ]
+      },
+      "metadata": {
+        "designer": {"x": 400, "y": 0},
+        "label": "Aggregate by stream"
+      }
+    },
+    {
+      "id": 4,
+      "module": "http:ActionSendData",
+      "version": 3,
+      "parameters": {
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "method": "POST",
+        "headers": [
+          {"name": "Authorization", "value": "Bearer {{GROQ_API_KEY}}"},
+          {"name": "Content-Type", "value": "application/json"}
+        ],
+        "body": "{{toJSON({\"model\": \"llama-3.3-70b-versatile\", \"messages\": [{\"role\": \"system\", \"content\": \"You write concise, encouraging weekly P&L summaries for a small automated business.\"}, {\"role\": \"user\", \"content\": concat(\"Write a brief (3-4 sentences) weekly P&L summary. Revenue data: \", toString(3.result), \". Include what's trending up, any concerns, and one specific recommendation for next week. Keep it factual and motivating.\")}], \"max_tokens\": 250})}}"
+      },
+      "metadata": {
+        "designer": {"x": 600, "y": 0},
+        "label": "Generate plain-English summary via Groq"
+      }
+    },
+    {
+      "id": 5,
+      "module": "gmail:ActionSendEmail",
+      "version": 1,
+      "parameters": {
+        "to": "{{YOUR_EMAIL}}",
+        "subject": "Weekly P&L — {{formatDate(now; 'MMMM D, YYYY')}}",
+        "content": "{{parseJSON(4.body).choices[0].message.content}}\n\nDetailed breakdown:\n{{toString(3.result)}}\n\nView full report: https://airtable.com/{{AIRTABLE_BASE_ID}}",
+        "contentType": "text"
+      },
+      "metadata": {
+        "designer": {"x": 800, "y": 0},
+        "label": "Send P&L email"
+      }
+    },
+    {
+      "id": 6,
+      "module": "telegram-bot-api:ActionSendMessage",
+      "version": 1,
+      "parameters": {
+        "token": "{{TELEGRAM_TOKEN}}",
+        "chat_id": "{{TELEGRAM_CHAT_ID}}",
+        "text": "*Weekly P&L Report*\n\n{{parseJSON(4.body).choices[0].message.content}}\n\n📊 Full report sent to your email.",
+        "parse_mode": "Markdown"
+      },
+      "metadata": {
+        "designer": {"x": 1000, "y": 0},
+        "label": "Send Telegram P&L summary"
+      }
+    }
+  ],
+  "metadata": {
+    "instant": false,
+    "version": 1,
+    "scenario": {
+      "roundtrips": 1,
+      "maxErrors": 3,
+      "autoCommit": true
+    }
+  },
+  "_setup_instructions": {
+    "step1": "Import this JSON into Make.com",
+    "step2": "Connect Airtable module with your API key",
+    "step3": "Connect Gmail module with your Gmail account",
+    "step4": "Connect Telegram Bot module with your token",
+    "step5": "Replace GROQ_API_KEY in the HTTP module",
+    "step6": "Replace YOUR_EMAIL with your email address",
+    "step7": "Enable the scenario — it runs every Sunday at 8am"
+  }
+}

@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Malahkai — B2B & SaaS Content Writer</title>
+  <meta name="description" content="Malahkai is a B2B and SaaS content writer helping businesses grow through blog posts, case studies, email sequences, and LinkedIn content." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --border: #2a2d3a;
+      --accent: #6c63ff;
+      --accent-light: #8b85ff;
+      --text: #e8e9f0;
+      --muted: #8a8da4;
+      --white: #ffffff;
+      --green: #22c55e;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      font-size: 16px;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(15, 17, 23, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+    .nav-logo {
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--white);
+      letter-spacing: -0.02em;
+    }
+    .nav-logo span { color: var(--accent); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta {
+      background: var(--accent);
+      color: var(--white) !important;
+      padding: 0.5rem 1.2rem;
+      border-radius: 8px;
+      font-weight: 600 !important;
+      transition: background 0.2s !important;
+    }
+    .nav-cta:hover { background: var(--accent-light) !important; color: var(--white) !important; }
+
+    /* ── SECTIONS ── */
+    section { padding: 6rem 2rem; }
+    .container { max-width: 960px; margin: 0 auto; }
+
+    /* ── HERO ── */
+    #hero {
+      padding: 8rem 2rem 6rem;
+      text-align: center;
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(108,99,255,0.12) 0%, transparent 70%);
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(108,99,255,0.12);
+      border: 1px solid rgba(108,99,255,0.25);
+      border-radius: 100px;
+      padding: 0.3rem 1rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--accent-light);
+      margin-bottom: 2rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .dot {
+      width: 7px; height: 7px;
+      background: var(--green);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+    h1 {
+      font-size: clamp(2.2rem, 5vw, 3.4rem);
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+      color: var(--white);
+      margin-bottom: 1.5rem;
+    }
+    h1 em {
+      font-style: normal;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-sub {
+      font-size: 1.15rem;
+      color: var(--muted);
+      max-width: 560px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.7;
+    }
+    .hero-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.8rem 1.8rem;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: var(--white);
+    }
+    .btn-primary:hover { background: var(--accent-light); transform: translateY(-1px); }
+    .btn-outline {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-outline:hover { border-color: var(--accent); color: var(--accent-light); transform: translateY(-1px); }
+
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      margin-top: 4rem;
+      padding-top: 4rem;
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+    .stat-num {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: -0.03em;
+    }
+    .stat-label { font-size: 0.85rem; color: var(--muted); margin-top: 0.2rem; }
+
+    /* ── SERVICES ── */
+    #services { background: var(--surface); }
+    .section-tag {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+    }
+    h2 {
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--white);
+      margin-bottom: 1rem;
+    }
+    .section-sub {
+      color: var(--muted);
+      font-size: 1.05rem;
+      max-width: 500px;
+      margin-bottom: 3rem;
+    }
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+    }
+    .service-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.75rem;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .service-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .service-icon {
+      width: 44px; height: 44px;
+      background: rgba(108,99,255,0.12);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      margin-bottom: 1.2rem;
+    }
+    .service-card h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--white);
+      margin-bottom: 0.5rem;
+    }
+    .service-card p { font-size: 0.9rem; color: var(--muted); line-height: 1.6; }
+    .service-price {
+      margin-top: 1.2rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--accent-light);
+    }
+
+    /* ── SAMPLES ── */
+    #samples {}
+    .samples-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+    .sample-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.75rem;
+      transition: border-color 0.2s;
+    }
+    .sample-card:hover { border-color: var(--border); }
+    .sample-tag {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 0.25rem 0.7rem;
+      border-radius: 100px;
+      margin-bottom: 1rem;
+    }
+    .tag-blog { background: rgba(34,197,94,0.12); color: #4ade80; }
+    .tag-linkedin { background: rgba(59,130,246,0.12); color: #60a5fa; }
+    .tag-email { background: rgba(249,115,22,0.12); color: #fb923c; }
+    .sample-card h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--white);
+      margin-bottom: 0.75rem;
+      line-height: 1.4;
+    }
+    .sample-card p { font-size: 0.88rem; color: var(--muted); line-height: 1.7; }
+    .sample-meta {
+      margin-top: 1.2rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+      display: flex;
+      gap: 1rem;
+    }
+
+    /* ── PROCESS ── */
+    #process { background: var(--surface); }
+    .process-steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2rem;
+      margin-top: 0.5rem;
+      counter-reset: steps;
+    }
+    .process-step { position: relative; }
+    .step-number {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: rgba(108,99,255,0.15);
+      border: 1px solid rgba(108,99,255,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--accent-light);
+      margin-bottom: 1rem;
+    }
+    .process-step h3 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--white);
+      margin-bottom: 0.4rem;
+    }
+    .process-step p { font-size: 0.85rem; color: var(--muted); }
+
+    /* ── CONTACT ── */
+    #contact { text-align: center; }
+    .contact-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 3.5rem 2rem;
+      max-width: 580px;
+      margin: 0 auto;
+      background: linear-gradient(135deg, var(--surface) 0%, rgba(108,99,255,0.05) 100%);
+    }
+    .contact-card h2 { margin-bottom: 1rem; }
+    .contact-card p { color: var(--muted); margin-bottom: 2rem; font-size: 1rem; }
+    .contact-options { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      nav { padding: 0 1.25rem; }
+      .nav-links { display: none; }
+      section { padding: 4rem 1.25rem; }
+      #hero { padding: 5rem 1.25rem 4rem; }
+      .hero-stats { gap: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Malahkai<span>.</span></div>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#samples">Samples</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#contact" class="nav-cta">Work Together</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="container">
+    <div class="hero-badge">
+      <span class="dot"></span>
+      Available for new projects
+    </div>
+    <h1>Content that makes<br/><em>B2B companies grow</em></h1>
+    <p class="hero-sub">
+      I write blog posts, case studies, and email sequences for SaaS and tech companies.
+      Fast turnaround. No fluff. Copy that ranks and converts.
+    </p>
+    <div class="hero-actions">
+      <a href="#contact" class="btn btn-primary">
+        ✉ Let's work together
+      </a>
+      <a href="#samples" class="btn btn-outline">
+        View my work →
+      </a>
+    </div>
+    <div class="hero-stats">
+      <div>
+        <div class="stat-num">48hr</div>
+        <div class="stat-label">Average turnaround</div>
+      </div>
+      <div>
+        <div class="stat-num">100%</div>
+        <div class="stat-label">Satisfaction guarantee</div>
+      </div>
+      <div>
+        <div class="stat-num">3</div>
+        <div class="stat-label">Revision rounds included</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="container">
+    <div class="section-tag">What I do</div>
+    <h2>Services & Pricing</h2>
+    <p class="section-sub">Clear scope. Fixed prices. Delivered on time.</p>
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="service-icon">✍️</div>
+        <h3>Blog Posts & Articles</h3>
+        <p>SEO-optimized long-form content for SaaS, tech, and B2B brands. Researched, structured, and written to rank.</p>
+        <div class="service-price">From $25 · 500–2,000 words</div>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">📄</div>
+        <h3>Resume Rewriting</h3>
+        <p>ATS-optimized resumes that get past filters and land interviews. Includes cover letter on request.</p>
+        <div class="service-price">From $45 · 24hr delivery</div>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">📱</div>
+        <h3>Social Media Captions</h3>
+        <p>LinkedIn and Instagram caption packs tailored to your brand voice. Engagement-focused copy with hashtag research.</p>
+        <div class="service-price">From $35 · Pack of 10</div>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">📊</div>
+        <h3>Research Reports</h3>
+        <p>Well-structured research documents, industry analyses, and white papers. Clear findings, cited sources.</p>
+        <div class="service-price">From $60 · 800–1,500 words</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SAMPLES -->
+<section id="samples">
+  <div class="container">
+    <div class="section-tag">Writing samples</div>
+    <h2>Recent Work</h2>
+    <p class="section-sub">A look at what I write and how I write it.</p>
+    <div class="samples-grid">
+
+      <div class="sample-card">
+        <span class="sample-tag tag-blog">Blog Post</span>
+        <h3>Why Your SaaS Onboarding Flow Is Killing Trial Conversions</h3>
+        <p>
+          Most SaaS companies spend thousands acquiring trial users, then lose 70% of them in the first three days. The culprit is almost never the product — it's the onboarding flow. When a new user can't reach their first "aha moment" within 10 minutes, they churn. Here's how to fix it before your next cohort expires...
+        </p>
+        <div class="sample-meta">
+          <span>📝 Blog post</span>
+          <span>🏷 SaaS / Growth</span>
+        </div>
+      </div>
+
+      <div class="sample-card">
+        <span class="sample-tag tag-linkedin">LinkedIn</span>
+        <h3>The counterintuitive pricing lesson I learned the hard way</h3>
+        <p>
+          We raised prices by 40% last quarter. Churn went down. Here's what actually happened: cheap pricing attracts price-sensitive customers. Price-sensitive customers churn the moment a competitor offers a discount. When we raised prices, we lost the customers who were never going to stay anyway — and kept everyone else. Your price is a signal. Make sure it's saying the right thing.
+        </p>
+        <div class="sample-meta">
+          <span>💼 LinkedIn post</span>
+          <span>🏷 B2B / Founder</span>
+        </div>
+      </div>
+
+      <div class="sample-card">
+        <span class="sample-tag tag-email">Email</span>
+        <h3>Re: You signed up 3 days ago and haven't logged in</h3>
+        <p>
+          Hey [First name], I noticed you created an account on Tuesday but haven't had a chance to log back in. That's usually one of two things — either life got busy (totally get it), or something felt unclear during setup. If it's the second one, I want to fix that. Hit reply and tell me what stopped you. I read every response personally. Takes 30 seconds and it genuinely helps...
+        </p>
+        <div class="sample-meta">
+          <span>📧 Email sequence</span>
+          <span>🏷 SaaS / Retention</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section id="process">
+  <div class="container">
+    <div class="section-tag">How it works</div>
+    <h2>Simple process, fast delivery</h2>
+    <p class="section-sub" style="margin-bottom:2.5rem">No lengthy onboarding. Most projects start within 24 hours.</p>
+    <div class="process-steps">
+      <div class="process-step">
+        <div class="step-number">1</div>
+        <h3>Send me the brief</h3>
+        <p>Tell me the topic, audience, tone, and goal. The more context the better — but a sentence works too.</p>
+      </div>
+      <div class="process-step">
+        <div class="step-number">2</div>
+        <h3>I get to work</h3>
+        <p>Researched first draft delivered within 24–48 hours. You'll know the exact deadline before I start.</p>
+      </div>
+      <div class="process-step">
+        <div class="step-number">3</div>
+        <h3>We refine it</h3>
+        <p>Up to 3 rounds of revisions included. I don't close a project until you're happy with it.</p>
+      </div>
+      <div class="process-step">
+        <div class="step-number">4</div>
+        <h3>Publish and grow</h3>
+        <p>You get publish-ready copy. For ongoing needs, ask about monthly content packages.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="container">
+    <div class="contact-card">
+      <div class="section-tag" style="text-align:center">Get in touch</div>
+      <h2>Ready to start?</h2>
+      <p>Send me your brief and I'll get back to you within a few hours. No lengthy intake forms.</p>
+      <div class="contact-options">
+        <a href="https://www.upwork.com" target="_blank" rel="noopener" class="btn btn-primary">
+          Hire me on Upwork
+        </a>
+        <a href="https://contra.com" target="_blank" rel="noopener" class="btn btn-outline">
+          Find me on Contra
+        </a>
+      </div>
+      <p style="margin-top:1.5rem; font-size:0.85rem; color:var(--muted);">
+        Also available for a free 15-min call — book via the links above.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2026 Malahkai · B2B & SaaS Content Writer</p>
+</footer>
+
+</body>
+</html>
