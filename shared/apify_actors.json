@@ -1,0 +1,22 @@
+{
+  "walmart_clearance": {
+    "id": "NUpaMBAuyUGwtttUo",
+    "name": "ultimate-walmart-scraper",
+    "runs": 10717
+  },
+  "target_clearance": {
+    "id": "pQmpa6v5CVbke4nu4",
+    "name": "cloudflare-scraper",
+    "runs": 27012
+  },
+  "ebay_scraper": {
+    "id": "imHauyZAb4ZhYkgZG",
+    "name": "ebay-product-details-scraper",
+    "runs": 32217
+  },
+  "etsy_scraper": {
+    "id": "NTfBVYWebZ5cdqxal",
+    "name": "etsy-scraper-pro",
+    "runs": 1305
+  }
+}

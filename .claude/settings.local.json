@@ -3,7 +3,10 @@
     "allow": [
       "Bash(python3 -c \":*)",
       "Bash(pandoc \"C:\\\\Users\\\\cyani\\\\Downloads\\\\profit_powerhouse_concept_sheet.docx\" -o /tmp/concept_sheet.md)",
-      "Read(//tmp/**)"
+      "Read(//tmp/**)",
+      "Bash(powershell -Command \"Get-ChildItem -Path ''G:\\\\Moneymachine'' -Recurse -Filter ''*.py'' | ForEach-Object { \\(Get-Content $_FullName\\) -replace ''load_dotenv\\\\\\(ROOT / \"\".env\"\"\\\\\\)'', ''load_dotenv\\(ROOT / \"\".env\"\", override=True\\)'' | Set-Content $_FullName }\")",
+      "Bash(python \"G:/Moneymachine/fix_dotenv.py\")",
+      "Bash(python -c \":*)"
     ]
   }
 }
